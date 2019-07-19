@@ -1,14 +1,24 @@
 const express = require('express');
 const morgan = require('morgan'); // logging.
+const bodyParser = require('body-parser');
 const views  = require('./routes/views');
+const dataInput = require('./routes/dataInput');
 
 
 const app = express();
 app.use(morgan('dev')); // load in development mode.
+app.use(bodyParser.json());
 
+
+// define counting variable.
+// the syntax with app.locals enables the variable to be accessed in an 
+// external routes file.
+app.locals.counter = [0];
+console.log(app.locals.counter);
 
 // load routes
 app.use('/', views);
+app.use('/data', dataInput);
 
 // make the public directory available.
 app.use('/static', express.static('public')); 
@@ -21,15 +31,11 @@ const requestTime = function(req, res, next) {
   // console.log(req);
   next();
 };
+// use it as middleware
 app.use(requestTime);
 
 
-/* app.get('/', function(req, res){
-  //res.send('Hello World, I tell the weather.');
-  //res.send('Hi, you called me at: '+ req.requestTime);
-  res.sendFile('index.html', {root: 'src/views'});
-}); */
-
+// simple json API which returns date.
 app.get('/date', function(req, res) {
   res.json({
     time: req.requestTime
@@ -37,12 +43,12 @@ app.get('/date', function(req, res) {
 });
 
 
+// error handling.
 app.use(function(req, res, next) {
   const err = new Error('Not found');
   err.status = 404;
   next(err);
 });
-
 
 app.use(function(err, req, res, next){
   res.status(err.status || 500);
@@ -53,11 +59,7 @@ app.use(function(err, req, res, next){
 });
 
 
-
-
 const port = 3000;
 app.listen(port, function(){
   console.log(`Server listening on port ${port}`);
 });
-
-console.log('Hello World!');
