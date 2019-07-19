@@ -1,0 +1,9 @@
+{
+  "name": "weatherstation-server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/michaels011235/weatherstation-server.git",
+  "author": "Michael S <michael.s011235@gmail.com>",
+  "license": "MIT",
+  "private": true
+}
