@@ -1,16 +1,41 @@
 const express = require('express');
+const morgan = require('morgan'); // logging.
+const views  = require('./routes/views');
 
 
 const app = express();
+app.use(morgan('dev')); // load in development mode.
 
 
+// load routes
+app.use('/', views);
 
-app.use('/static', express.static('public'));
+// make the public directory available.
+app.use('/static', express.static('public')); 
 
-app.get('/', function(req, res){
+// logger function for time of request.
+const requestTime = function(req, res, next) {
+  let event = new Date(Date.now());
+  req.requestTime = event.toUTCString();
+  console.log('Requested at ' + req.requestTime);
+  // console.log(req);
+  next();
+};
+app.use(requestTime);
+
+
+/* app.get('/', function(req, res){
   //res.send('Hello World, I tell the weather.');
+  //res.send('Hi, you called me at: '+ req.requestTime);
   res.sendFile('index.html', {root: 'src/views'});
+}); */
+
+app.get('/date', function(req, res) {
+  res.json({
+    time: req.requestTime
+  });
 });
+
 
 app.use(function(req, res, next) {
   const err = new Error('Not found');
@@ -26,6 +51,8 @@ app.use(function(err, req, res, next){
     message: err.message
   });
 });
+
+
 
 
 const port = 3000;
