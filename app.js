@@ -9,4 +9,4 @@ server.listen(port, function(){
   console.log('Server listening on port ' + port);
 });
 
-// console.log('Hello World!');
+console.log('Hello World!' + server.listening);
