@@ -5,5 +5,14 @@
   "repository": "https://github.com/michaels011235/weatherstation-server.git",
   "author": "Michael S <michael.s011235@gmail.com>",
   "license": "MIT",
-  "private": true
+  "private": true,
+  "dependencies": {
+    "http": "^0.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.1"
+  },
+  "scripts": {
+    "start": "nodemon index.js"
+  }
 }
