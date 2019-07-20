@@ -2,18 +2,12 @@ const express = require('express');
 const morgan = require('morgan'); // logging.
 const bodyParser = require('body-parser');
 const views  = require('./routes/views');
-const dataInput = require('./routes/dataInput');
 const api = require('./routes/api');
 
 // Instantiate an express object. Typical workflow.
 const app = express();
 
-
-// define counting variable.
-// the syntax with app.locals enables the variable to be accessed in an 
-// external routes file.
-app.locals.counter = [0];
-console.log(app.locals.counter);
+app.locals.dataArray = [];
 
 app.use(morgan('dev')); // load in development mode.
 app.use(bodyParser.json());
@@ -30,14 +24,12 @@ const requestTime = function(req, res, next) {
 app.use(requestTime);
 
 
-
 // LOAD ROUTES. - Has to be loaded after middleware.
 // make the public directory available.
 app.use('/static', express.static('public')); 
 
 // load routes
 app.use('/', views);
-app.use('/data', dataInput);
 app.use('/api', api);
 
 
