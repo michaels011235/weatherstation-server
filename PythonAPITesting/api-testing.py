@@ -1,15 +1,61 @@
 import requests
 import json
 import random
-
+import numpy as np
+import datetime
 random.seed(1)
 
+number_of_readings = 100
+time_for_readings = 100 # seconds
 
-for i in range(10):
+min_temp = 10
+max_temp = 30
+temp_periods = 1
+temp_phase_shift = 0
+temp_round_decimals = 1
+
+min_hum = 30
+max_hum = 80
+hum_periods = 2
+hum_phase_shift = - np.pi / 2
+hum_round_decimals = 1
+
+times = np.linspace(0, time_for_readings, number_of_readings, endpoint=False)
+print(times)
+
+current_time = datetime.datetime.now(datetime.timezone.utc)
+current_time = current_time.replace(microsecond=0)
+print(current_time.isoformat())
+datetimes = np.array([
+  (current_time + datetime.timedelta(seconds=time)).isoformat() for time in times
+])
+# print(datetimes)
+
+def sinusoidal(times_arr, max_reading, min_reading, periods, phase_shift):
+  '''
+  returns sinusoidal array
+  '''
+  shift = (max_reading + min_reading) / 2
+  amplitude = (max_reading - min_reading) / 2
+  last_value = times_arr[-1]
+  omega = 2 * np.pi * temp_periods / last_value
+  return amplitude * np.cos(times_arr * omega + phase_shift) + shift
+
+temperatures = sinusoidal(times, max_temp, min_temp, 
+    temp_periods, temp_phase_shift).round(decimals=temp_round_decimals)
+# print(temperatures)
+
+humidities  = sinusoidal(times, max_hum, min_hum, 
+    hum_periods, hum_phase_shift).round(decimals=hum_round_decimals)
+# print(humidities)
+
+for time, temp, hum in zip(datetimes, temperatures, humidities):
   singleReading = {
-    'temperature': random.choice([22,30, 33, 35]),
-    'humidity': random.choice([10, 50, 60])
+    'time': time,
+    'temperature': temp,
+    'humidity': hum
   }
+  print(singleReading)
 
   url = 'http://localhost:3000/api/data/singlereading'
 

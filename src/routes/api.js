@@ -6,11 +6,12 @@ router.get('/data', function(req, res) {
 });
 
 router.post('/data/singlereading', function(req, res) {
+  const time = req.body.time;
   const temperature = Number(req.body.temperature);
   const humidity = Number(req.body.humidity);
-  const currentTime = new Date(Date.now());
+  
   const singleReadingObject = {
-    'time': currentTime.toUTCString(), 
+    'time': time,
     'temperature': temperature, 
     'humidity': humidity};
   req.app.locals.dataArray.push(singleReadingObject);

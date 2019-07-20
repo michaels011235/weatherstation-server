@@ -5,6 +5,7 @@
   <title>Weather Station</title>
   <link rel="stylesheet" href="/static/css/style.css">
   <link href="/static/favicon.ico" rel="icon" type="image/x-icon" />
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
 
 <body>
@@ -13,15 +14,11 @@
 
 <p>This is a weather station.</p>
 
-<h2>Data:</h2>
+<p>It is <span id="time"></span>.</p>
 
-<p><b>Current time:</b> It is <span id="time"></span>.</p>
-
-<b>Data API testing:</b> <span id="data"></span>
-
+<div id="chart1"></div>
 
 </body>
-
 
 <script src="/static/js/api.js"></script>
 <script src="/static/js/index.js"></script>
