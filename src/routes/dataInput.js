@@ -2,11 +2,11 @@ const express = require('express');
 const router = express.Router();
 
 
-router.get('/', function(req, res) {
-  const counter = req.app.locals.counter;
-  console.log(counter);
-  res.json({'counter': counter});
-});
+// router.get('/', function(req, res) {
+//   const counter = req.app.locals.counter;
+//   console.log(counter);
+//   res.json({'counter': counter});
+// });
 
 
 // call with

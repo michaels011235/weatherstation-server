@@ -3,11 +3,10 @@ const morgan = require('morgan'); // logging.
 const bodyParser = require('body-parser');
 const views  = require('./routes/views');
 const dataInput = require('./routes/dataInput');
+const api = require('./routes/api');
 
-
+// Instantiate an express object. Typical workflow.
 const app = express();
-app.use(morgan('dev')); // load in development mode.
-app.use(bodyParser.json());
 
 
 // define counting variable.
@@ -16,12 +15,8 @@ app.use(bodyParser.json());
 app.locals.counter = [0];
 console.log(app.locals.counter);
 
-// load routes
-app.use('/', views);
-app.use('/data', dataInput);
-
-// make the public directory available.
-app.use('/static', express.static('public')); 
+app.use(morgan('dev')); // load in development mode.
+app.use(bodyParser.json());
 
 // logger function for time of request.
 const requestTime = function(req, res, next) {
@@ -35,21 +30,27 @@ const requestTime = function(req, res, next) {
 app.use(requestTime);
 
 
-// simple json API which returns date.
-app.get('/date', function(req, res) {
-  res.json({
-    time: req.requestTime
-  });
-});
+
+// LOAD ROUTES. - Has to be loaded after middleware.
+// make the public directory available.
+app.use('/static', express.static('public')); 
+
+// load routes
+app.use('/', views);
+app.use('/data', dataInput);
+app.use('/api', api);
 
 
 // error handling.
+// This function will be called if no route handles the request.
 app.use(function(req, res, next) {
-  const err = new Error('Not found');
+  const err = new Error('Not found.');
   err.status = 404;
+  // Pass the error on to error handling function
   next(err);
 });
 
+// error handling function. gets the error passed via a next(err) statement.
 app.use(function(err, req, res, next){
   res.status(err.status || 500);
   res.send({
@@ -58,7 +59,7 @@ app.use(function(err, req, res, next){
   });
 });
 
-
+// make the server listen at a port.
 const port = 3000;
 app.listen(port, function(){
   console.log(`Server listening on port ${port}`);
