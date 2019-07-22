@@ -1,19 +1,15 @@
 const timeDiv = document.getElementById('time');
 
-
 setInterval(() => {
   const currentTime = new Date(Date.now());
-
-  timeDiv.innerText = currentTime.toUTCString();
-
-
+  timeDiv.innerText = currentTime.toLocaleString();
 }, 500);
 
+// console.log(location);
 
-let ctx = document.getElementById('chart1');
-get(endpoint, {}, (data) => {
-  
-  const timeArray = data.map(element => { 
+function getTimeArray(data) {
+  return data.map(element => 
+  { 
     // the plot.ly library is very picky about the format :(
     let time =  new Date(element.time);
     let arr = [time.getFullYear(), time.getMonth(), time.getDay(), 
@@ -21,12 +17,10 @@ get(endpoint, {}, (data) => {
     let strArr = arr.map((element) => String(element).padStart(2,'0'));
     return `${strArr[0]}-${strArr[1]}-${strArr[2]} ${strArr[3]}:${strArr[4]}:${strArr[5]}`;
   });
-   console.log(timeArray);
-  const tempArray = data.map(element => element.temperature);
-   console.log(tempArray);
-  const humArray = data.map(element => element.humidity);
-   console.log(humArray);
+}
 
+function plotly(timeArray, tempArray, humArray) {
+  let ctx = document.getElementById('chart1');
   let trace1 = {
     type: "scatter",
     mode: "lines",
@@ -58,7 +52,6 @@ get(endpoint, {}, (data) => {
     yaxis: {
       title: 'Temperature [°C]',
       autorange: true,
-      //range: [86.8700008333, 138.870004167],
       type: 'linear'
     },
     yaxis2: {
@@ -69,11 +62,22 @@ get(endpoint, {}, (data) => {
       side: 'right'
     }
   };
-  
   Plotly.newPlot('chart1', plotData, layout);
+}
 
 
+const data = get(); // a Promise
+data.then(data => {
+  const timeArray = getTimeArray(data);
+  console.log(timeArray);
+  const tempArray = data.map(element => element.temperature);
+  console.log(tempArray);
+  const humArray = data.map(element => element.humidity);
+  console.log(humArray);
+
+  plotly(timeArray, tempArray, humArray);
 });
+
 
 
 
