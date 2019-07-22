@@ -47,7 +47,34 @@ function plotly(timeArray, tempArray, humArray) {
 
     xaxis: {
       //range: [timeArray[0], timeArray[-1]],
-      type: 'date'
+      type: 'date',
+      rangeselector: {buttons: [
+        {
+          count: 1,
+          label: '1 min',
+          step: 'minute',
+          stepmode: 'backward'
+        },
+        {
+          count: 5,
+          label: '5 min',
+          step: 'minute',
+          stepmode: 'backward'
+        },
+        {
+          count: 1,
+          label: '1 day',
+          step: 'day',
+          stepmode: 'backward'
+        },
+        {
+          count: 1,
+          label: '1 day',
+          step: 'day',
+          stepmode: 'backward'
+        },
+        {step: 'all'}
+      ]}
     },
     yaxis: {
       title: 'Temperature [°C]',

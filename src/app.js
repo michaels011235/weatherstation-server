@@ -3,11 +3,27 @@ const morgan = require('morgan'); // logging.
 const bodyParser = require('body-parser');
 const views  = require('./routes/views');
 const api = require('./routes/api');
+const fs = require('fs');
 
 // Instantiate an express object. Typical workflow.
 const app = express();
 
-app.locals.dataArray = [];
+let dataFile = '/tmp/testing-server/dataFile.json';
+
+function loadData(path) {
+  fs.readFile(dataFile, 'utf8', (err, data) => {
+    if (err) {
+      console.log('reading data: some error occured');
+      app.locals.dataArray = [];
+    }
+    app.locals.dataArray = JSON.parse(data);
+    console.log('read the datafile.');
+    console.log(app.locals.dataArray);
+  });
+}
+loadData();
+
+
 
 app.use(morgan('dev')); // load in development mode.
 app.use(bodyParser.json());
@@ -56,3 +72,17 @@ const port = 3000;
 app.listen(port, function(){
   console.log(`Server listening on port ${port}`);
 });
+
+// save the data after save_after_seconds seconds.
+
+let save_after_seconds = 10000;
+
+setInterval(() => {
+  let jsonData = JSON.stringify(app.locals.dataArray);
+  fs.writeFile(dataFile, jsonData, 'utf8', (err) => {
+    if (err) throw err;
+    console.log('writing to datafile successful');
+  });
+}, save_after_seconds);
+
+
