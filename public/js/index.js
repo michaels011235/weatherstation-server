@@ -13,12 +13,19 @@ setInterval(() => {
 let ctx = document.getElementById('chart1');
 get(endpoint, {}, (data) => {
   
-  const timeArray = data.map(element => element.time);
-  // console.log(timeArray);
+  const timeArray = data.map(element => { 
+    // the plot.ly library is very picky about the format :(
+    let time =  new Date(element.time);
+    let arr = [time.getFullYear(), time.getMonth(), time.getDay(), 
+      time.getHours(), time.getMinutes(), time.getSeconds()];
+    let strArr = arr.map((element) => String(element).padStart(2,'0'));
+    return `${strArr[0]}-${strArr[1]}-${strArr[2]} ${strArr[3]}:${strArr[4]}:${strArr[5]}`;
+  });
+   console.log(timeArray);
   const tempArray = data.map(element => element.temperature);
-  // console.log(tempArray);
+   console.log(tempArray);
   const humArray = data.map(element => element.humidity);
-  // console.log(humArray);
+   console.log(humArray);
 
   let trace1 = {
     type: "scatter",
