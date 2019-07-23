@@ -18,6 +18,7 @@
     "nodemon": "^1.19.1"
   },
   "scripts": {
-    "start": "nodemon src/app.js"
+    "start-development": "NODE_ENV=development nodemon src/app.js",
+    "start": "NODE_ENV=production node src/app.js"
   }
 }
