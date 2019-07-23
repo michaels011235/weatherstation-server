@@ -3,6 +3,11 @@ import json
 import random
 import numpy as np
 import datetime
+import os
+from dotenv import load_dotenv
+load_dotenv(dotenv_path='../.env')
+# print(os.getenv('WEATHER_SERVER_URL'))
+import os.path
 random.seed(1)
 
 number_of_measurements = 100
@@ -59,7 +64,8 @@ for time, temp, hum in zip(datetimes, temperatures, humidities):
   }]
   # print(singlemeasurement)
 
-  url = 'http://localhost:3000/api/data/measurements'
+  url = os.getenv('WEATHER_SERVER_URL') + '/api/data/measurements'
+  # print(url)
 
   r = requests.post(url, json=singlemeasurement)
   print(r.text, r.status_code)
