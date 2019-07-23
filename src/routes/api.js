@@ -1,6 +1,13 @@
 const express = require('express');
 const router = express.Router();
+const fs = require('fs');
 
+// load environment files configuration
+require('dotenv').config();
+const dataDirectory = process.env.DATADIR;
+const dataFile = dataDirectory + '/' + process.env.DATAFILENAME;
+
+// endpoint which is queried by the frontend.
 router.get('/data', function(req, res) {
   res.json(req.app.locals.dataArray);
 });
@@ -69,8 +76,22 @@ router.post(measurements, function(req, res) {
     req.app.locals.dataArray.push(singleMeasurementObject);
   });
   
-  res.send('got a temperature measurement(s).');
-});
+  // save the data to file.
+  let jsonData = JSON.stringify(req.app.locals.dataArray);
+  fs.writeFile(dataFile, jsonData, 'utf8', (err) => {
+    if (err) {
+      console.log('there was an while saving the data: ', err);
+    }
+    else {
+      console.log('writing to datafile successful.');
+    }
+  });
 
+
+  res.send('got a temperature measurement(s).');
+
+  
+
+});
 
 module.exports = router;
