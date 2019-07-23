@@ -54,6 +54,9 @@ If you want to run it in production mode:
 It can be read in `package.json` in the `scripts` section but for convenience and new nodejs users:
 The code will start at `/src/app.js`.
 
+Important: If you want to run the server on Port 80, you have to use `sudo yarn start`. `sudo` uses the `root` user to execute the command.
+Only `root` can access port 80.
+
 ### For testing the server:
 
 - change the directory to `PythonAPITesting`. 
