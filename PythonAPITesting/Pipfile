@@ -9,6 +9,7 @@ verify_ssl = true
 numpy = "*"
 requests = "*"
 python-dotenv = "*"
+jupyterlab = "*"
 
 [requires]
 python_version = "3.6"

@@ -1,3 +1,6 @@
+*.ipynb_checkpoints/
+.env_real
+
 # Logs
 logs
 *.log
