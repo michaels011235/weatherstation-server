@@ -12,10 +12,22 @@ function getTimeArray(data) {
   { 
     // the plot.ly library is very picky about the format :(
     let time =  new Date(element.time);
-    let arr = [time.getFullYear(), time.getMonth(), time.getDay(), 
+    // console.log('in getTimeArray: time is:');
+    // console.log(time);
+    // console.log(typeof(time));
+    let arr = [
+      time.getFullYear(), 
+      time.getMonth()+1, // js starts enumerating the months with 0.
+      time.getDate(), 
       time.getHours(), time.getMinutes(), time.getSeconds()];
+    // console.log('in getTimeArray: variable arr:');
+    // console.log(arr)
+
     let strArr = arr.map((element) => String(element).padStart(2,'0'));
-    return `${strArr[0]}-${strArr[1]}-${strArr[2]} ${strArr[3]}:${strArr[4]}:${strArr[5]}`;
+    let returnVar = `${strArr[0]}-${strArr[1]}-${strArr[2]} ${strArr[3]}:${strArr[4]}:${strArr[5]}`;
+    // console.log('return Variable of getTimeArray is:');
+    // console.log(returnVar);
+    return returnVar;
   });
 }
 
@@ -95,16 +107,27 @@ function plotly(timeArray, tempArray, humArray) {
 
 const data = get(); // a Promise
 data.then(data => {
+  // console.log('just before getTimeArray');
   const timeArray = getTimeArray(data);
-  console.log(timeArray);
+  // console.log('Times =');
+  // console.log(timeArray);
   const tempArray = data.map(element => element.temperature);
-  console.log(tempArray);
+  // console.log(tempArray);
   const humArray = data.map(element => element.humidity);
-  console.log(humArray);
+  // console.log(humArray);
 
   plotly(timeArray, tempArray, humArray);
 });
 
+// const d = data.then(data => {
+//   return data[0];
+// });
 
+// const t = d.then(d => {
+//   return d.time;
+// });
 
-
+// t.then(t => {
+//   console.log(t);
+//   console.log(typeof(t));
+// });

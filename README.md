@@ -21,7 +21,9 @@ to`SERVER:PORT/api/data/measurements`. These requests must have the form:
   }
 ]
 ```
-`time` is a ISO 8601 timestring, `temp`  and `hum` are an integer or float. 
+
+`time` is a ISO 8601 timestring, `temp` and `hum` are an integer or float. If
+`time` does not have a timezone information, it will be treated as UTC.
 
 ## Installation
 

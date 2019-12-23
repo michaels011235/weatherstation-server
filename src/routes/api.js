@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const fs = require('fs');
+const moment = require('moment');
 
 // load environment files configuration
 require('dotenv').config();
@@ -33,12 +34,17 @@ function measurementMiddleware(req, res, next) {
 
   // check each measurement.
   function check_measurement(element) {
-    // time checking.
     let checks = [];
-    let time = new Date(element.time);
-    element.time = time.toUTCString();
+    // time checking.
+    // print the input time
+    // console.log('Request: element.time is:')
+    // console.log(element.time);
+    // console.log(typeof(element.time));
+
+    let time = moment.utc(element.time).toISOString();
+    element.time = time;
     // checks.push(!time.toString() === "Invalid Date");
-    checks.push(time > new Date('2019-01-01'));
+    //checks.push(time > new Date('2019-01-01'));
 
     let temp = Number(element.temperature);
     checks.push(temp > -50 && temp < 70);
@@ -80,7 +86,7 @@ router.post(measurements, function(req, res) {
   let jsonData = JSON.stringify(req.app.locals.dataArray);
   fs.writeFile(dataFile, jsonData, 'utf8', (err) => {
     if (err) {
-      console.log('there was an while saving the data: ', err);
+      console.log('there was an error while saving the data: ', err);
     }
     else {
       console.log('writing to datafile successful.');
