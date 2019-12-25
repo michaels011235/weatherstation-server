@@ -80,6 +80,14 @@ def dummy_measurements(
 
   return (times, datetimes, np.around(temps, decimals=1), 
   np.around(hums, decimals=1))
+
+def single_measurement_request_json(time, temp, hum):
+    singlemeasurement = [{
+      'time': time,
+      'temperature': temp,
+      'humidity': hum
+    }]
+    return singlemeasurement
   
 
 
@@ -92,11 +100,7 @@ def test_request(datetimes, temps, hums, print_requests=False, print_statuscodes
   # print(url)
 
   for time, temp, hum in zip(datetimes, temps, hums):
-    singlemeasurement = [{
-      'time': time,
-      'temperature': temp,
-      'humidity': hum
-    }]
+    singlemeasurement = single_measurement_request_json(time, temp, hum)
     if print_requests:
       print(singlemeasurement)
 

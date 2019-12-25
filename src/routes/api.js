@@ -9,8 +9,16 @@ const dataDirectory = process.env.DATADIR;
 const dataFile = dataDirectory + '/' + process.env.DATAFILENAME;
 
 // endpoint which is queried by the frontend.
-router.get('/data', function(req, res) {
+router.get('/dataarr', function(req, res) {
   res.json(req.app.locals.dataArray);
+});
+
+// endpoint which is queried by the frontend.
+router.get('/data', async function(req, res) {
+  let data = await req.app.locals.db.all('select * from data order by time asc');
+  // console.log(data);
+  // console.log(typeof(data));
+  res.json(data);
 });
 
 
@@ -80,6 +88,9 @@ router.post(measurements, function(req, res) {
       'temperature': element.temperature, 
       'humidity': element.humidity};
     req.app.locals.dataArray.push(singleMeasurementObject);
+
+    req.app.locals.db.run("insert into data values (?,?,?)", element.time, element.temperature, element.humidity);
+    console.log('inserted into db');
   });
   
   // save the data to file.
@@ -94,9 +105,7 @@ router.post(measurements, function(req, res) {
   });
 
 
-  res.send('got a temperature measurement(s).');
-
-  
+  res.send('got (a) temperature measurement(s).');
 
 });
 
