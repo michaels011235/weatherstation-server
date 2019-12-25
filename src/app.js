@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const morgan = require('morgan'); // logging.
 const bodyParser = require('body-parser');
 const views  = require('./routes/views');
@@ -36,7 +37,11 @@ const main = async () => {
   // LOAD ROUTES. - Has to be loaded after middleware.
   // make the public directory available.
   app.use('/static', express.static('public')); 
-  app.use('/static/plotly', express.static('node_modules/plotly.js-dist/'));
+  const plotly_path = path.join(__dirname, '../node_modules/plotly.js-dist/');
+  // console.log(plotly_path);
+  // app.use('/plotly', express.static(plotly_path));
+  app.use('/plotly', express.static('node_modules/plotly.js-dist/'));
+  // console.log(path.join(__dirname, '../public'));
 
   
   // load routes
