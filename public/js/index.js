@@ -75,13 +75,19 @@ function plotly(timeArray, tempArray, humArray) {
         },
         {
           count: 1,
-          label: '1 day',
-          step: 'day',
+          label: '1 hour',
+          step: 'hour',
           stepmode: 'backward'
         },
         {
           count: 1,
           label: '1 day',
+          step: 'day',
+          stepmode: 'backward'
+        },
+        {
+          count: 7,
+          label: '7 days',
           step: 'day',
           stepmode: 'backward'
         },
