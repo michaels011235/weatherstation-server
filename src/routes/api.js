@@ -3,16 +3,6 @@ const router = express.Router();
 const fs = require('fs');
 const moment = require('moment');
 
-// load environment files configuration
-require('dotenv').config();
-const dataDirectory = process.env.DATADIR;
-const dataFile = dataDirectory + '/' + process.env.DATAFILENAME;
-
-// endpoint which is queried by the frontend.
-router.get('/dataarr', function(req, res) {
-  res.json(req.app.locals.dataArray);
-});
-
 // endpoint which is queried by the frontend.
 router.get('/data', async function(req, res) {
   let data = await req.app.locals.db.all('select * from data order by time asc');
@@ -77,34 +67,17 @@ router.post(measurements, measurementMiddleware);
 
 router.post(measurements, function(req, res) {
   // so using the middleware we already checked that the input is valid.
-  // now, push it to the other data.
   req.body.forEach((element) => {
-    // const time = element.time;
-    // const temperature = Number(element.temperature);
-    // const humidity = Number(element.humidity);
     
     const singleMeasurementObject = {
       'time': element.time,
       'temperature': element.temperature, 
       'humidity': element.humidity};
-    req.app.locals.dataArray.push(singleMeasurementObject);
 
     req.app.locals.db.run("insert into data values (?,?,?)", element.time, element.temperature, element.humidity);
     console.log('inserted into db');
   });
   
-  // save the data to file.
-  let jsonData = JSON.stringify(req.app.locals.dataArray);
-  fs.writeFile(dataFile, jsonData, 'utf8', (err) => {
-    if (err) {
-      console.log('there was an error while saving the data: ', err);
-    }
-    else {
-      console.log('writing to datafile successful.');
-    }
-  });
-
-
   res.send('got (a) temperature measurement(s).');
 
 });

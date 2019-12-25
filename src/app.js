@@ -14,38 +14,7 @@ const main = async () => {
   const app = express();
   
   const dataDirectory = process.env.DATADIR;
-  const dataFile = dataDirectory + '/' + process.env.DATAFILENAME;
   const DBpath = dataDirectory + '/' + process.env.DBfilename;
-  
-  function initializeStorage() {
-    if (!fs.existsSync(dataDirectory)) {
-      fs.mkdirSync(dataDirectory);
-    }
-  
-    if(!fs.existsSync(dataFile)) {
-      fs.writeFileSync(dataFile, JSON.stringify([]));
-    }
-  }
-  // console.log("before initialize storage");
-  initializeStorage();
-  // console.log("after initialize storage");
-  
-  function loadData() {
-    try {
-      console.log('Loading data.');
-      const file = fs.readFileSync(dataFile, {encoding:'utf8'});
-      // app.locals is a built in object. 
-      // requests can access app.locals.
-      app.locals.dataArray = JSON.parse(file); 
-      console.log('read the datafile.');
-      // console.log(app.locals.dataArray);
-    }
-    catch(err) {
-        console.log('loading data: some error occured: ', err);
-        app.locals.dataArray = [];
-    }
-  }
-  loadData();
   
   async function createDatabase() {
     // let db = await new sqlite3.Database(DBpath);
@@ -53,10 +22,10 @@ const main = async () => {
     await db.run("create table if not exists data (time text, temperature real, humidity real)");
     app.locals.db = db;
 
-    console.log(`created database ${db}`);
+    // console.log(`created database ${db}`);
   }
   await createDatabase();
-  console.log('after createDatabase()');
+  // console.log('after createDatabase()');
   
   app.use(morgan('dev')); // load in development mode.
   
