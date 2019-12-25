@@ -36,6 +36,8 @@ const main = async () => {
   // LOAD ROUTES. - Has to be loaded after middleware.
   // make the public directory available.
   app.use('/static', express.static('public')); 
+  app.use('/static/plotly', express.static('node_modules/plotly.js-dist/'));
+
   
   // load routes
   app.use('/', views);
