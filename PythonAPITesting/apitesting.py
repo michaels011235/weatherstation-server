@@ -2,21 +2,40 @@ import json
 import datetime
 import os
 import posixpath
+import pathlib
 
 import numpy as np
 import requests
 from dotenv import load_dotenv
+from pathlib import Path
+
+home_dir = os.path.abspath('../')
 
 # load Environment variables
-load_dotenv(dotenv_path='../.env')
-# print(os.getenv('WEATHER_SERVER_URL'))
+load_dotenv(dotenv_path=os.path.abspath(os.path.join(home_dir, '.env')))
 
-server_url = os.getenv('WEATHER_SERVER_URL')
-server_url = server_url.rstrip('/')
-# print(f'server url = {server_url}')
+def server_url_fn():
+  server_url = os.getenv('WEATHER_SERVER_URL')
+  server_url = server_url.rstrip('/').rstrip(':')
+  server_url = ':'.join([server_url, os.getenv('PORT')])
+  return server_url
+server_url = server_url_fn()
 
 api_endpoint = 'api/data/measurements' # important: no '/' in front
-# print(f'api endpoint = {api_endpoint}')
+print(f'api endpoint = {api_endpoint}')
+
+# load database path.
+def database_path(db_path_variable):
+  db_path = pathlib.Path(db_path_variable)
+  if not db_path.is_absolute():
+    return pathlib.Path('.').resolve().parent.joinpath(db_path).resolve()
+  else:
+    return db_path_variable
+  
+db_path = database_path(os.getenv('DBPath'))
+print(f'db_path = {db_path}')
+  
+
 
 def dummy_sinusoidal_measurements(
   x=None, max_measurement=30, min_measurement=10, omega=1, phase_shift=0):
@@ -28,8 +47,8 @@ def dummy_sinusoidal_measurements(
     x = np.arange(100)
   shift = (max_measurement + min_measurement) / 2
   amplitude = (max_measurement - min_measurement) / 2
-  last_value = x[-1]
   return amplitude * np.cos(x * omega + phase_shift) + shift
+
 
 def dummy_measurements(
   start_datetime=None,
@@ -81,6 +100,7 @@ def dummy_measurements(
   return (times, datetimes, np.around(temps, decimals=1), 
   np.around(hums, decimals=1))
 
+
 def single_measurement_request_json(time, temp, hum):
     singlemeasurement = [{
       'time': time,
@@ -89,7 +109,6 @@ def single_measurement_request_json(time, temp, hum):
     }]
     return singlemeasurement
   
-
 
 def test_request(datetimes, temps, hums, print_requests=False, print_statuscodes=True):
   '''
@@ -108,4 +127,3 @@ def test_request(datetimes, temps, hums, print_requests=False, print_statuscodes
 
     if print_statuscodes:
       print(r.text, r.status_code)
-
