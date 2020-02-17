@@ -9,13 +9,19 @@ const sqlite3 = require('sqlite3');
 const Database = require('sqlite-async');
 require('dotenv').config();
 
+// the createDatabase function can only be used with an await keyword inside a
+// function. So, the main function serves as a container
 const main = async () => {
 
   // Instantiate an express object. Typical workflow.
   const app = express();
   
-  const dataDirectory = process.env.DATADIR;
-  const DBpath = dataDirectory + '/' + process.env.DBfilename;
+  // const dataDirectory = process.env.DATADIR;
+  // const DBpath = dataDirectory + '/' + process.env.DBfilename;
+  const DBPath_env_var = process.env.DBPath;
+  console.log(`env variable DBPath: ${DBPath_env_var}`);
+  const DBpath = path.join(process.cwd(), process.env.DBPath);
+  console.log(`database path: ${DBpath}`);
   
   async function createDatabase() {
     // let db = await new sqlite3.Database(DBpath);
