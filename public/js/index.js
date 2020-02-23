@@ -107,8 +107,28 @@ function plotly(timeArray, tempArray, humArray) {
       side: 'right'
     }
   };
-  Plotly.newPlot('chart1', plotData, layout);
+  Plotly.newPlot(ctx, plotData, layout);
+
+  ctx.on('plotly_relayout', event => {
+  // zoom event.
+  console.log('entered - .on event');
+  if (event['xaxis.range[0]'] || event['xaxis.range[1]']) {
+        console.log('inside');
+        Plotly.restyle(ctx, {
+        opacity: 0.4,
+        x: [[1,1.5, 2, 4]],
+        y: [[5,6,7,8]]
+       })
+  }
+});
+
 }
+
+
+// testing
+const ctx0 = document.getElementById('chart1');
+console.log('here');
+console.log(String(ctx0));
 
 
 const data = get(); // a Promise
@@ -125,15 +145,60 @@ data.then(data => {
   plotly(timeArray, tempArray, humArray);
 });
 
-// const d = data.then(data => {
-//   return data[0];
+
+
+
+
+const chart_div = document.getElementById('chart2');
+
+const tr1 = {
+  x: [1,2,3,4,5],
+  y: [3,5,3,5,4],
+  type: 'scatter'
+};
+const test_plot_data = [tr1];
+
+Plotly.newPlot(chart_div, test_plot_data);
+
+
+console.log('executed line before .on');
+
+console.log(chart_div);
+chart_div.on('plotly_relayout', event => {
+  // zoom event.
+  console.log('entered - .on event');
+  if (event['xaxis.range[0]'] || event['xaxis.range[1]']) {
+        console.log('inside');
+        Plotly.restyle(chart_div, {
+        opacity: 0.4,
+        x: [[1,1.5, 2, 4]],
+        y: [[5,6,7,8]]
+       })
+  }
+});
+
+chart_div.on('plotly_relayout',
+    function(eventdata){  
+        console.log(eventdata);
+    });
+
+
+// testing
+const ctx = document.getElementById('chart1');
+console.log('here');
+console.log(ctx);
+// code below does not work.
+
+// ctx.on('plotly_relayout', event => {
+//   // zoom event.
+//   console.log('entered - .on event');
+//   if (event['xaxis.range[0]'] || event['xaxis.range[1]']) {
+//         console.log('inside');
+//         Plotly.restyle(ctx, {
+//         opacity: 0.4,
+//         x: [[1,1.5, 2, 4]],
+//         y: [[5,6,7,8]]
+//        })
+//   }
 // });
 
-// const t = d.then(d => {
-//   return d.time;
-// });
-
-// t.then(t => {
-//   console.log(t);
-//   console.log(typeof(t));
-// });

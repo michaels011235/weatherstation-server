@@ -11,6 +11,23 @@ router.get('/data', async function(req, res) {
   res.json(data);
 });
 
+router.get('/intervaldata', async function(req, res) {
+  const interval = req.body;
+
+  // input validation
+  let from_time_m = moment(interval.from_time, moment.ISO_8601);
+  let to_time_m  = moment(interval.to_time, moment.ISO_8601);
+  console.log({'x': from_time_m, 'y': to_time_m});
+  // res.send('hey');
+  // res.send(`valid request: ${from_time_m}, ${to_time_m}`);
+  res.json({'x': from_time_m, 
+            'y': to_time_m});
+
+
+
+
+});
+
 
 // Implement API Endpoint for getting new measurements.
 const measurements = '/data/measurements';
