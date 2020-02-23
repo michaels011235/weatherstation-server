@@ -12,20 +12,33 @@ router.get('/data', async function(req, res) {
 });
 
 router.get('/intervaldata', async function(req, res) {
+  //
+  // accepts a get request with a JSON body of the form:
+  // { 
+    // "from_time": "ISO-8601 string",
+    // "to_time": "ISO-8601 string"
+  // }
+  //
   const interval = req.body;
 
   // input validation
-  let from_time_m = moment(interval.from_time, moment.ISO_8601);
-  let to_time_m  = moment(interval.to_time, moment.ISO_8601);
-  console.log({'x': from_time_m, 'y': to_time_m});
-  // res.send('hey');
-  // res.send(`valid request: ${from_time_m}, ${to_time_m}`);
-  res.json({'x': from_time_m, 
-            'y': to_time_m});
+  const from_time_m = moment.utc(interval.from_time, moment.ISO_8601, true);
+  const to_time_m  = moment.utc(interval.to_time, moment.ISO_8601, true);
+  try{
+    let correct = from_time_m.isValid() && to_time_m.isValid();
+    if (!correct) {
+      throw 'input error';
+    }
 
-
-
-
+    let data = await req.app.locals.db.all('select * from data where time > ? and time < ? order by time asc', from_time_m.toISOString(), to_time_m.toISOString());
+    res.json(data);
+  }
+  catch(err) {
+    res.status(400).send(err);
+  }
+  finally {
+    console.log({'from': interval.from_time, 'to': interval.to_time});
+  }
 });
 
 

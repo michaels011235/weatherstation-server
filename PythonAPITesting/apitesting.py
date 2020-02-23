@@ -24,6 +24,8 @@ server_url = server_url_fn()
 api_endpoint = 'api/data/measurements' # important: no '/' in front
 print(f'api endpoint = {api_endpoint}')
 
+data_interval_endpoint = 'api/intervaldata'
+
 # load database path.
 def database_path(db_path_variable):
   db_path = pathlib.Path(db_path_variable)
