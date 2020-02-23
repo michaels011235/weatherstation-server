@@ -1,3 +1,4 @@
+
 const timeDiv = document.getElementById('time');
 
 setInterval(() => {
@@ -11,20 +12,15 @@ function getTimeArray(data) {
   return data.map(element => 
   { 
     // the plot.ly library is very picky about the format :(
-    let time =  new Date(element.time);
+    let time =  moment.utc(element.time, moment.ISO_8601, true);
     // console.log('in getTimeArray: time is:');
-    // console.log(time);
+    time.local();
+    // console.log(time.format());
     // console.log(typeof(time));
-    let arr = [
-      time.getFullYear(), 
-      time.getMonth()+1, // js starts enumerating the months with 0.
-      time.getDate(), 
-      time.getHours(), time.getMinutes(), time.getSeconds()];
-    // console.log('in getTimeArray: variable arr:');
-    // console.log(arr)
 
-    let strArr = arr.map((element) => String(element).padStart(2,'0'));
-    let returnVar = `${strArr[0]}-${strArr[1]}-${strArr[2]} ${strArr[3]}:${strArr[4]}:${strArr[5]}`;
+    let returnVar = time.format("YYYY-MM-DD HH:mm:ss");
+
+
     // console.log('return Variable of getTimeArray is:');
     // console.log(returnVar);
     return returnVar;
@@ -109,96 +105,59 @@ function plotly(timeArray, tempArray, humArray) {
   };
   Plotly.newPlot(ctx, plotData, layout);
 
-  ctx.on('plotly_relayout', event => {
-  // zoom event.
-  console.log('entered - .on event');
-  if (event['xaxis.range[0]'] || event['xaxis.range[1]']) {
-        console.log('inside');
-        Plotly.restyle(ctx, {
-        opacity: 0.4,
-        x: [[1,1.5, 2, 4]],
-        y: [[5,6,7,8]]
-       })
-  }
-});
+  
 
 }
 
 
-// testing
-const ctx0 = document.getElementById('chart1');
-console.log('here');
-console.log(String(ctx0));
-
-
-const data = get(); // a Promise
-data.then(data => {
-  // console.log('just before getTimeArray');
-  const timeArray = getTimeArray(data);
-  // console.log('Times =');
-  // console.log(timeArray);
-  const tempArray = data.map(element => element.temperature);
-  // console.log(tempArray);
-  const humArray = data.map(element => element.humidity);
-  // console.log(humArray);
-
-  plotly(timeArray, tempArray, humArray);
-});
-
-
-
-
-
-const chart_div = document.getElementById('chart2');
-
-const tr1 = {
-  x: [1,2,3,4,5],
-  y: [3,5,3,5,4],
-  type: 'scatter'
-};
-const test_plot_data = [tr1];
-
-Plotly.newPlot(chart_div, test_plot_data);
-
-
-console.log('executed line before .on');
-
-console.log(chart_div);
-chart_div.on('plotly_relayout', event => {
-  // zoom event.
-  console.log('entered - .on event');
-  if (event['xaxis.range[0]'] || event['xaxis.range[1]']) {
-        console.log('inside');
-        Plotly.restyle(chart_div, {
-        opacity: 0.4,
-        x: [[1,1.5, 2, 4]],
-        y: [[5,6,7,8]]
-       })
+async function plot_weather_chart(from_t, to_t) {
+  
+  let fn_arr = [get_initial_data, get_interval_data];
+  let choice;
+  if (from_t == null || to_t == null) {
+    // const data = get_initial_data(); // a Promise
+    choice = 0;
   }
-});
+  else {
+    // const data = get_interval_data(from_t, to_t); // a Promise
+    choice = 1;
+  }
 
-chart_div.on('plotly_relayout',
-    function(eventdata){  
-        console.log(eventdata);
+  const data = fn_arr[choice](from_t, to_t);
+  
+  data.then(data => {
+    // console.log('just before getTimeArray');
+    const timeArray = getTimeArray(data);
+    // console.log('Times =');
+    // console.log(timeArray);
+    const tempArray = data.map(element => element.temperature);
+    // console.log(tempArray);
+    const humArray = data.map(element => element.humidity);
+    // console.log(humArray);
+  
+    plotly(timeArray, tempArray, humArray);
+    let ctx = document.getElementById('chart1');
+
+    ctx.on('plotly_relayout', event => {
+      // zoom event.
+      console.log('entered - .on event');
+      console.log(event);
+      if (event['xaxis.range[0]'] || event['xaxis.range[1]']) {
+            console.log('inside');
+            let interval_start = moment(event['xaxis.range[0]']).toISOString();
+            let interval_end = moment(event['xaxis.range[1]']).toISOString();
+            console.log('interval', interval_start, interval_end);
+            plot_weather_chart(interval_start, interval_end);
+      }
+      if (event['xaxis.autorange']){
+        plot_weather_chart();
+      }
     });
 
 
-// testing
-const ctx = document.getElementById('chart1');
-console.log('here');
-console.log(ctx);
-// code below does not work.
+  });
+}
 
-// ctx.on('plotly_relayout', event => {
-//   // zoom event.
-//   console.log('entered - .on event');
-//   if (event['xaxis.range[0]'] || event['xaxis.range[1]']) {
-//         console.log('inside');
-//         Plotly.restyle(ctx, {
-//         opacity: 0.4,
-//         x: [[1,1.5, 2, 4]],
-//         y: [[5,6,7,8]]
-//        })
-//   }
-// });
+plot_weather_chart();
+
 

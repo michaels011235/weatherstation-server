@@ -49,6 +49,7 @@ const main = async () => {
   // console.log(plotly_path);
   // app.use('/plotly', express.static(plotly_path));
   app.use('/plotly', express.static('node_modules/plotly.js-dist/'));
+  app.use('/momentjs', express.static('node_modules/moment/'));
 
   
   // load routes

@@ -3,7 +3,7 @@ const router = express.Router();
 const fs = require('fs');
 const moment = require('moment');
 
-// endpoint which is queried by the frontend.
+// frontend
 router.get('/data', async function(req, res) {
   let data = await req.app.locals.db.all('select * from data order by time asc');
   // console.log(data);
@@ -11,11 +11,36 @@ router.get('/data', async function(req, res) {
   res.json(data);
 });
 
-router.get('/intervaldata', async function(req, res) {
+function nPoints(arr, n) {
+  if (arr.length > n) {
+    const natural_numbers = [];
+    for (let i = 0; i < n; i++) {
+      natural_numbers.push(i);
+    }
+
+    const points = natural_numbers.map(num => arr[Math.round(num* (arr.length / n))]);
+    return points;
+  }
+  else {return arr;}
+
+}
+
+// frontend
+router.get('/initialdata', async function(req, res) {
+  let data = await req.app.locals.db.all('select * from data order by time asc');
+  const n_rows = 5000; // plotting takes time, so only 5000 rows at max.
+  const plotData = nPoints(data, n_rows);
+
+  // console.log(data);
+  // console.log(typeof(data));
+  res.json(plotData);
+});
+
+function intervalDataMiddleware(req, res, next) {
   //
   // accepts a get request with a JSON body of the form:
   // { 
-    // "from_time": "ISO-8601 string",
+    // "from_time": "ISO-8601 string", // without timezone: interpreted as UTC
     // "to_time": "ISO-8601 string"
   // }
   //
@@ -27,18 +52,36 @@ router.get('/intervaldata', async function(req, res) {
   try{
     let correct = from_time_m.isValid() && to_time_m.isValid();
     if (!correct) {
-      throw 'input error';
+      throw new Error('input error');
     }
-
-    let data = await req.app.locals.db.all('select * from data where time > ? and time < ? order by time asc', from_time_m.toISOString(), to_time_m.toISOString());
-    res.json(data);
+    req.from_time = from_time_m.toISOString();
+    req.to_time = to_time_m.toISOString();
+    next()
   }
   catch(err) {
-    res.status(400).send(err);
+    next(err)
   }
   finally {
+    console.log('original input:');
     console.log({'from': interval.from_time, 'to': interval.to_time});
+    console.log('SQL query input:');
+    console.log({'from': from_time_m.toISOString(), 'to': to_time_m.toISOString()});
   }
+}
+
+router.post('/intervaldata', intervalDataMiddleware);
+
+router.post('/intervaldata', async function(req, res) {
+  let data = await req.app.locals.db.all(
+        'select * from data where time > ? and time < ? order by time asc', 
+        req.from_time, req.to_time);
+
+  const n_rows = 5000; // plotting takes time, so only 5000 rows at max.
+  const plotData = nPoints(data, n_rows);
+
+  // console.log(data);
+  // console.log(typeof(data));
+  res.json(plotData);
 });
 
 
@@ -69,8 +112,9 @@ function measurementMiddleware(req, res, next) {
     // console.log(element.time);
     // console.log(typeof(element.time));
 
-    let time = moment.utc(element.time).toISOString();
-    element.time = time;
+    let time = moment.utc(element.time);
+    checks.push(time.isValid());
+    element.time = time.toISOString();
     // checks.push(!time.toString() === "Invalid Date");
     //checks.push(time > new Date('2019-01-01'));
 
@@ -105,7 +149,7 @@ router.post(measurements, function(req, res) {
       'humidity': element.humidity};
 
     req.app.locals.db.run("insert into data values (?,?,?)", element.time, element.temperature, element.humidity);
-    console.log('inserted into db');
+    console.log(`inserted into db: ${JSON.stringify(singleMeasurementObject)}`);
   });
   
   res.send('got (a) temperature measurement(s).');
