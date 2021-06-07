@@ -1,4 +1,7 @@
 
+// Frontend code
+// this code is executed by the browser's Javascript engine.
+
 const timeDiv = document.getElementById('time');
 
 setInterval(() => {
@@ -105,8 +108,6 @@ function plotly(timeArray, tempArray, humArray) {
   };
   Plotly.newPlot(ctx, plotData, layout);
 
-  
-
 }
 
 
@@ -158,6 +159,7 @@ async function plot_weather_chart(from_t, to_t) {
   });
 }
 
+// actual execution of code.
 plot_weather_chart();
 
 

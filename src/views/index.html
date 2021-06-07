@@ -6,26 +6,26 @@
   <link rel="stylesheet" href="/static/css/style.css">
   <link href="/static/favicon.ico" rel="icon" type="image/x-icon" />
   <!-- <script src="https://cdn.plot.ly/plotly-1.51.3.min.js"></script> -->
+  
   <!-- The line below is for self-hosting plotly -->
   <script src="/plotly/plotly.js"></script>
   <script src="/momentjs/moment.js"></script>
 </head>
 
 <body>
-
+<!-- Just some description. -->
 <h1>Weather Station</h1>
-
 <p>This is a weather station.</p>
-
 <p><b>Time:</b> It is <span id="time"></span>.</p>
 
+<!-- A placeholder div-tag for the chart. To be filled by the scripts below. -->
 <div id="chart1"></div>
 
-<div id="chart2"></div>
 
 
 </body>
-
+<!-- Load the scripts to make the website interactive -->
+<!-- The order of imports matters! -->
 <script src="/static/js/api.js"></script>
 <script src="/static/js/index.js"></script>
 </html>

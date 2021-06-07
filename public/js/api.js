@@ -1,9 +1,11 @@
 
+
+// Frontend code 
+// this code is executed by the browser's Javascript engine.
+
 const data_endpoint = location.origin + '/api/data';
 const initial_data_endpoint = location.origin + '/api/initialdata';
 const interval_data_endpoint = location.origin + '/api/intervaldata';
-
-
 
 async function get_data() {
   try {
@@ -17,8 +19,6 @@ async function get_data() {
     console.log('fetch failed', err);
   }
 }
-
-
 
 async function get_initial_data() {
   try {
@@ -45,8 +45,6 @@ async function get_interval_data(from_t, to_t) {
       body: JSON.stringify(data) }
       );
     
-    
-
     if (!fetchPromise.ok) {
       throw Error(fetchPromise.statusText);
     }
