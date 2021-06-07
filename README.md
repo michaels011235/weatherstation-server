@@ -27,13 +27,13 @@ to`SERVER:PORT/api/data/measurements`. These requests must have the form:
 
 ## Installation
 
-### Prequisites:
+### Prerequisites
 
 - `npm` - for the server.
 
-- pipenv - just in case you want to test the server.
+-  just in case you want to test the server: `Python`, and 2 external libraries: `requests`, `numpy`.
 
-### Server.
+### Server
 
 - The following works for a plain Ubuntu 20.04 (at least as of June 2021).
 
@@ -59,7 +59,7 @@ The code will start at `/src/app.js`.
 Important: If you want to run the server on Port 80, you have to use `sudo npm run start`. `sudo` uses the `root` user to execute the command.
 Only `root` can access port 80.
 
-### For testing the server:
+### Testing the server
 
 - change the directory to `PythonAPITesting`. 
 
