@@ -2,6 +2,8 @@
 .env_real
 weather_server.db
 
+*__pycache__/
+
 # Logs
 logs
 *.log

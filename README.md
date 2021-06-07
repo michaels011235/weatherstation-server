@@ -29,13 +29,13 @@ to`SERVER:PORT/api/data/measurements`. These requests must have the form:
 
 ### Prequisites:
 
-- yarn - for the server.
+- `npm` - for the server.
 
 - pipenv - just in case you want to test the server.
 
 ### Server.
 
-- The following works for a plain Ubuntu 18.04 (at least as of July 2019).
+- The following works for a plain Ubuntu 20.04 (at least as of June 2021).
 
 - The following steps take place in a terminal. Open a terminal emulator.
 
@@ -45,18 +45,18 @@ to`SERVER:PORT/api/data/measurements`. These requests must have the form:
 
 - change the name of the file `.env.example` to `.env` and adapt it if neccessary. This file contains the configuration.
 
-- `yarn install`
+- `npm install`
 
-- `yarn start-development` This runs the script `start` as defined in `package.json`. This is just for testing purposes. 
+- `npm run start-development` This runs the script `start` as defined in `package.json`. This is just for testing purposes. 
 
 If you want to run it in production mode:
 
-- `yarn start`.
+- `npm run start`.
 
 It can be read in `package.json` in the `scripts` section but for convenience and new nodejs users:
 The code will start at `/src/app.js`.
 
-Important: If you want to run the server on Port 80, you have to use `sudo yarn start`. `sudo` uses the `root` user to execute the command.
+Important: If you want to run the server on Port 80, you have to use `sudo npm run start`. `sudo` uses the `root` user to execute the command.
 Only `root` can access port 80.
 
 ### For testing the server:
