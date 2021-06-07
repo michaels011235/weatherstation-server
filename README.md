@@ -63,8 +63,10 @@ Only `root` can access port 80.
 
 - change the directory to `PythonAPITesting`. 
 
-- `pipenv install` this installs the neccessary Python version and modules.
+- configure the `server_url` variable in `apitesting.py` if neccessary.
 
-- configure the `url` variable in `api-testing.py` if neccessary.
+- open a `python3` interpreter.
 
-- `pipenv run python api-testing.py`. 
+- `import apitesting`.
+
+- one use case is running `apitesting.test_fn()`.
