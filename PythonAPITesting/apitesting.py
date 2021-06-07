@@ -3,39 +3,31 @@ import datetime
 import os
 import posixpath
 import pathlib
+from pathlib import Path
 
 import numpy as np
 import requests
-from dotenv import load_dotenv
-from pathlib import Path
 
 home_dir = os.path.abspath('../')
 
-# load Environment variables
-load_dotenv(dotenv_path=os.path.abspath(os.path.join(home_dir, '.env')))
 
-def server_url_fn():
-  server_url = os.getenv('WEATHER_SERVER_URL')
-  server_url = server_url.rstrip('/').rstrip(':')
-  server_url = ':'.join([server_url, os.getenv('PORT')])
-  return server_url
-server_url = server_url_fn()
+server_url = 'http://localhost:3000/'
 
 api_endpoint = 'api/data/measurements' # important: no '/' in front
 print(f'api endpoint = {api_endpoint}')
 
 data_interval_endpoint = 'api/intervaldata'
 
-# load database path.
-def database_path(db_path_variable):
-  db_path = pathlib.Path(db_path_variable)
-  if not db_path.is_absolute():
-    return pathlib.Path('.').resolve().parent.joinpath(db_path).resolve()
-  else:
-    return db_path_variable
+# # load database path.
+# def database_path(db_path_variable):
+#   db_path = pathlib.Path(db_path_variable)
+#   if not db_path.is_absolute():
+#     return pathlib.Path('.').resolve().parent.joinpath(db_path).resolve()
+#   else:
+#     return db_path_variable
   
-db_path = database_path(os.getenv('DBPath'))
-print(f'db_path = {db_path}')
+# db_path = database_path(os.getenv('DBPath'))
+# print(f'db_path = {db_path}')
   
 
 
@@ -100,7 +92,7 @@ def dummy_measurements(
 
 
   return (times, datetimes, np.around(temps, decimals=1), 
-  np.around(hums, decimals=1))
+            np.around(hums, decimals=1))
 
 
 def single_measurement_request_json(time, temp, hum):
@@ -129,3 +121,7 @@ def test_request(datetimes, temps, hums, print_requests=False, print_statuscodes
 
     if print_statuscodes:
       print(r.text, r.status_code)
+
+def test_fn():
+    times, datetimes, temperatures, humidities = dummy_measurements()
+    test_request(datetimes, temperatures, humidities)
