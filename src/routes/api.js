@@ -4,6 +4,14 @@ const fs = require('fs');
 const moment = require('moment');
 
 // frontend
+router.get('/lastdata', async function(req, res) {
+    let data = await req.app.locals.db.all('SELECT * FROM data ORDER BY time desc LIMIT 1');
+    // console.log(data);
+    // console.log(typeof(data));
+    res.json(data);
+  });
+
+// frontend
 router.get('/data', async function(req, res) {
   let data = await req.app.locals.db.all('select * from data order by time asc');
   // console.log(data);

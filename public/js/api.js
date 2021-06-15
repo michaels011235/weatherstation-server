@@ -6,6 +6,7 @@
 const data_endpoint = location.origin + '/api/data';
 const initial_data_endpoint = location.origin + '/api/initialdata';
 const interval_data_endpoint = location.origin + '/api/intervaldata';
+const last_data_endpoint = location.origin + '/api/lastdata';
 
 async function get_data() {
   try {
@@ -54,3 +55,16 @@ async function get_interval_data(from_t, to_t) {
     console.log('fetch failed', err);
   }
 }
+
+async function get_last_data() {
+    try {
+      let fetchPromise =  await fetch(last_data_endpoint);
+      if (!fetchPromise.ok) {
+        throw Error(fetchPromise.statusText);
+      }
+      return fetchPromise.json();
+    }
+    catch (err) {
+      console.log('fetch failed', err);
+    }
+  }

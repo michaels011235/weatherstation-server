@@ -4,7 +4,7 @@ A very simple weatherstation app. This repository contains the code for the serv
 It opens a website at `SERVER:PORT` for example `localhost:3000`. You can ommit the 
 `PORT` if the port is set to 80.  
 
-A Raspberry Pi or something equivalent can send HTTP - requests with new data to the server.
+A Raspberry Pi or something equivalent can send HTTP-requests with new data to the server.
 
 The POST requests to the server must be HTTP POST requests in JSON format 
 to`SERVER:PORT/api/data/measurements`. These requests must have the form:
