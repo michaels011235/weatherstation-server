@@ -12,4 +12,14 @@ router.get('/', function(req, res) {
   res.sendFile('index.html', {root: 'src/views'});
 });
 
+router.get('/plot.html', function(req, res) {
+
+    // The lines below can be uncommented for testing purposes.  
+    //res.send('Hello World, I tell the weather.');
+    //res.send('Hi, you called me at: '+ req.requestTime);
+  
+  
+    res.sendFile('plot.html', {root: 'src/views'});
+  });
+
 module.exports = router;
